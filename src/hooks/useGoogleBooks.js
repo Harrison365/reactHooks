@@ -16,6 +16,7 @@ export default function useGoogleBooks(query) {
       })
       .catch((err) => {
         setError(true);
+        setIsLoading(false);
       });
   }, [query]);
 
