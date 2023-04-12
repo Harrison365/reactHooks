@@ -12,12 +12,10 @@ export default function useGoogleBooks(query) {
     getBooks(query)
       .then((books) => {
         setBooks(books);
+        setIsLoading(false);
       })
       .catch((err) => {
         setError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
   }, [query]);
 
