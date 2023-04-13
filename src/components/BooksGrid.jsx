@@ -14,10 +14,10 @@ const customStyles = {
   },
 };
 
-export default function BooksGrid({ query }) {
+export default function BooksGrid({ query, show }) {
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  const { books, error, isLoading } = useGoogleBooks(query);
+  const { books, error, isLoading } = useGoogleBooks(query, show);
 
   function closeModal() {
     setIsOpen(false);

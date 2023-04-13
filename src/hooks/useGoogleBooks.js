@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getBooks } from "../api/apiCalls";
 
-export default function useGoogleBooks(query) {
+export default function useGoogleBooks(query, show) {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -9,7 +9,7 @@ export default function useGoogleBooks(query) {
   useEffect(() => {
     setIsLoading(true);
     setError(false);
-    getBooks(query)
+    getBooks(query, show)
       .then((books) => {
         setBooks(books);
         setIsLoading(false);
@@ -18,7 +18,7 @@ export default function useGoogleBooks(query) {
         setError(true);
         setIsLoading(false);
       });
-  }, [query]);
+  }, [query, show]);
 
   return { books, error, isLoading };
 }
