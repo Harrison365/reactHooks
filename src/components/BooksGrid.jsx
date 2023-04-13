@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import BookCard from "./BookCard";
 import useGoogleBooks from "../hooks/useGoogleBooks";
+import usePublisherBooks from "../hooks/usePublishersBooks";
 import Modal from "react-modal";
+import "./BooksGrid.css";
 
 const customStyles = {
   content: {
@@ -16,8 +18,10 @@ const customStyles = {
 
 export default function BooksGrid({ query, show }) {
   const [modalIsOpen, setIsOpen] = useState(false);
-
+  const [selectedPublisher, setSelectedPublisher] = useState("Lucky Spool");
   const { books, error, isLoading } = useGoogleBooks(query, show);
+  const { publisherBooks, publisherLoading } =
+    usePublisherBooks(selectedPublisher);
 
   function closeModal() {
     setIsOpen(false);
@@ -25,6 +29,7 @@ export default function BooksGrid({ query, show }) {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong...</p>;
+
   return (
     <main className="books__grid">
       <Modal
@@ -35,21 +40,37 @@ export default function BooksGrid({ query, show }) {
         ariaHideApp={false}
       >
         <div>
-          <h2>More books by this publisher</h2>
-          <ul>
-            <li>Book 1</li>
-            <li>Book 2</li>
-            <li>Book 3</li>
-          </ul>
+          <h2>More books by {selectedPublisher}</h2>
+          {publisherLoading ? (
+            <p style={{ color: "black" }}>Loading...</p>
+          ) : (
+            <ul>
+              {publisherBooks
+                ? publisherBooks.map((publisherBook, index) => {
+                    return (
+                      <li key={index}>
+                        {publisherBook.volumeInfo.title} (
+                        {publisherBook.volumeInfo.authors
+                          ? publisherBook.volumeInfo.authors[0]
+                          : "-"}
+                        )
+                      </li>
+                    );
+                  })
+                : null}
+            </ul>
+          )}
         </div>
       </Modal>
       {books.map((book) => {
         return (
           <BookCard
             key={book.id}
+            details={book}
             title={book.volumeInfo.title}
             imgUrl={book.volumeInfo}
             setIsOpen={setIsOpen}
+            setSelectedPublisher={setSelectedPublisher}
           />
         );
       })}
